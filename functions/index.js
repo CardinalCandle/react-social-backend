@@ -13,10 +13,25 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { Timestamp } = require('firebase-admin/firestore'); 
 const app = require('express')();
+const firebase = require('firebase/app')
 admin.initializeApp();
 
 
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDmkLnbxdpuA5AH32qJJV_MpjvxKBIMhQQ",
+    authDomain: "react-social-784b8.firebaseapp.com",
+    projectId: "react-social-784b8",
+    storageBucket: "react-social-784b8.appspot.com",
+    messagingSenderId: "1005140683266",
+    appId: "1:1005140683266:web:c452c9d6f7a44b81b3951b",
+    measurementId: "G-VM9QKFDC31"
+  };
+  
+  
+  
+firebase.initializeApp(firebaseConfig);
+  
 
 app.get('/posts', (req, res) => {
     admin
