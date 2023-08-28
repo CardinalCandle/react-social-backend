@@ -14,17 +14,14 @@ const admin = require('firebase-admin')
 const { Timestamp } = require('firebase-admin/firestore'); 
 admin.initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+const express = require('express');
+const app = express();
 
-
-exports.helloWorld = onRequest((request, response) => {
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Ohio from Firebase!");
-});
-
-exports.getPosts = functions.https.onRequest((req, res) => {
-    admin.firestore().collection('posts').get()
+app.get('/posts', (req, res) => {
+    admin
+    .firestore()
+    .collection('posts')
+    .get()
     .then(data => {
         let posts = [];
         data.forEach(doc => {
@@ -33,7 +30,8 @@ exports.getPosts = functions.https.onRequest((req, res) => {
         return res.json(posts);
     })
     .catch(err => console.error(err));
-});
+})
+
 
 exports.createPost = functions.https.onRequest((req, res) => {
     if(req.method !== 'POST'){
@@ -56,3 +54,5 @@ exports.createPost = functions.https.onRequest((req, res) => {
         console.error(err)
     })
 });
+
+exports.api = functions.https.onRequest(app);
