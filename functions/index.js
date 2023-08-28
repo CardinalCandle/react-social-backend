@@ -12,10 +12,11 @@ const logger = require("firebase-functions/logger");
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const { Timestamp } = require('firebase-admin/firestore'); 
+const app = require('express')();
 admin.initializeApp();
 
-const express = require('express');
-const app = express();
+
+
 
 app.get('/posts', (req, res) => {
     admin
@@ -61,4 +62,4 @@ app.post('/post', (req, res) => {
     })
 });
 
-exports.api = functions.region('europe-west-1').https.onRequest(app);
+exports.api = functions.region('europe-west1').https.onRequest(app);
