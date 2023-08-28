@@ -14,6 +14,7 @@ const admin = require('firebase-admin')
 const { Timestamp } = require('firebase-admin/firestore'); 
 const app = require('express')();
 const firebase = require('firebase/app')
+const auth = require('firebase/auth');
 admin.initializeApp();
 
 
@@ -27,7 +28,6 @@ const firebaseConfig = {
     appId: "1:1005140683266:web:c452c9d6f7a44b81b3951b",
     measurementId: "G-VM9QKFDC31"
   };
-  
   
   
 firebase.initializeApp(firebaseConfig);
@@ -75,6 +75,27 @@ app.post('/post', (req, res) => {
         res.status(500).json({error: `something went wrong`});
         console.error(err)
     })
+});
+
+// Signup route
+app.post('/signup', (req, res) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        handle: req.body.handle,
+    };
+
+    // TODO validate data
+
+    admin.auth().createUser({email: newUser.email, password : newUser.password})
+    .then(data => {
+        return res.status(201).json({message: `user ${data.uid} signed up successfully`});
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code});
+    });
 });
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
