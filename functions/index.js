@@ -36,6 +36,9 @@ exports.getPosts = functions.https.onRequest((req, res) => {
 });
 
 exports.createPost = functions.https.onRequest((req, res) => {
+    if(req.method !== 'POST'){
+        return res.status(400).json({error: "method not allowed"})
+    }
     const newPost = {
         body: req.body.body,
         userHandle: req.body.userHandle,
