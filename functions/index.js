@@ -15,6 +15,8 @@ const { Timestamp } = require('firebase-admin/firestore');
 const app = require('express')();
 const firebase = require('firebase/app')
 const auth = require('firebase/auth');
+const { Auth } = require("firebase-admin/auth");
+require('firebase/auth');
 admin.initializeApp();
 
 
@@ -30,8 +32,8 @@ const firebaseConfig = {
   };
   
   
-firebase.initializeApp(firebaseConfig);
-  
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseAuth = auth.getAuth(firebaseApp);
 
 app.get('/posts', (req, res) => {
     admin
@@ -88,9 +90,12 @@ app.post('/signup', (req, res) => {
 
     // TODO validate data
 
-    admin.auth().createUser({email: newUser.email, password : newUser.password})
-    .then(data => {
-        return res.status(201).json({message: `user ${data.uid} signed up successfully`});
+    auth
+    .createUserWithEmailAndPassword(firebaseAuth, newUser.email, newUser.password)
+    .then((data) => {
+        return res
+        .status(201)
+        .json({message: `user ${data.user.uid} signed up successfully`});
     })
     .catch((err) => {
         console.error(err);
