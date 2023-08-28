@@ -35,9 +35,10 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const firebaseAuth = auth.getAuth(firebaseApp);
 
+const db = admin.firestore();
+
 app.get('/posts', (req, res) => {
-    admin
-    .firestore()
+    db
     .collection('posts')
     .orderBy('createdAt', 'desc')
     .get()
@@ -67,7 +68,7 @@ app.post('/post', (req, res) => {
         createdAt: new Date().toISOString()
     };
 
-    admin.firestore()
+    db()
     .collection('posts')
     .add(newPost)
     .then(doc => {
@@ -89,17 +90,24 @@ app.post('/signup', (req, res) => {
     };
 
     // TODO validate data
-
-    auth
-    .createUserWithEmailAndPassword(firebaseAuth, newUser.email, newUser.password)
-    .then((data) => {
-        return res
-        .status(201)
-        .json({message: `user ${data.user.uid} signed up successfully`});
+    db.doc(`/users/${newUser.handle}`).get()
+    .then(doc => {
+        if(doc.exists){
+            return res.status(400).json({handle: 'this handle is already taken'});
+        } else { 
+            return auth
+            .createUserWithEmailAndPassword(firebaseAuth, newUser.email, newUser.password)
+        }
     })
-    .catch((err) => {
+    .then(data => {
+        return auth.getIdToken(data.user);
+    })
+    .then(token => {
+        return res.status(201).json({token});
+    })
+    .catch(err => {
         console.error(err);
-        return res.status(500).json({ error: err.code});
+        return res.status(500).json({error: err.code});
     });
 });
 
