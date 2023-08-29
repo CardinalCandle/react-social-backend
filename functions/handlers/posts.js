@@ -76,7 +76,7 @@ exports.getPost = (req, res) => {
 }
 
 exports.commentOnPost = (req, res) => {
-    console.log('CONSOLE | ', req.params)
+
     if(req.body.body.trim() === '') return res.status(400).json({error: 'Must not be empty'});
 
     const newComment = {
@@ -92,6 +92,9 @@ exports.commentOnPost = (req, res) => {
         if(!doc.exists){
             return res.status(404).json({error : 'Post not found'});
         }
+        return doc.ref.update({commentCount: doc.data().commentCount + 1});
+    })
+    .then(() => {
         return db.collection('comments').add(newComment);
     })
     .then(() => {
