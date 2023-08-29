@@ -27,13 +27,18 @@ exports.postOnePost = (req, res) => {
     const newPost = {
         body: req.body.body,
         userHandle: req.user.handle,
-        createdAt: new Date().toISOString()
+        userImage: req.user.imageUrl,
+        createdAt: new Date().toISOString(),
+        likeCount: 0,
+        commentCount: 0
     };
 
     db
     .collection('posts')
     .add(newPost)
     .then(doc => {
+        const resPost = newPost;
+        resPost.postId = doc.id;
         res.json({message: `document ${doc.id} created successfully`});
     })
     .catch(err => {
@@ -77,12 +82,12 @@ exports.commentOnPost = (req, res) => {
     const newComment = {
         body: req.body.body,
         createdAt: new Date().toISOString(),
-        postId: req.params.postid,
+        postId: req.params.postId,
         userHandle: req.user.handle,
         userImage: req.user.imageUrl
     };
 
-    db.doc(`/posts/${req.params.postid}`).get()
+    db.doc(`/posts/${req.params.postId}`).get()
     .then((doc) => {
         if(!doc.exists){
             return res.status(404).json({error : 'Post not found'});
