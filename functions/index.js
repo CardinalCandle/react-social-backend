@@ -17,7 +17,7 @@ const auth = require('firebase/auth');
 const { Auth } = require("firebase-admin/auth");
 require('firebase/auth');
 
-const { getAllPosts,postOnePost, getPost, commentOnPost, likePost, unlikePost } = require('./handlers/posts');
+const { getAllPosts,postOnePost, getPost, commentOnPost, likePost, unlikePost, deletePost } = require('./handlers/posts');
 const { signup, login, uploadImage, addUserDetails, getAutheticatedUser } = require('./handlers/users');
 const FBAuth = require('./util/fbAuth')
 const firebaseConfig = require('./util/config')
@@ -30,10 +30,10 @@ const firebaseAuth = auth.getAuth(firebaseApp);
 app.get('/posts', getAllPosts)
 app.post('/post', FBAuth, postOnePost);
 app.get('/post/:postId', getPost);
-// TODO delete post
-app.get('/post/:postId/like', FBAuth, likePost)
-app.get('/post/:postId/unlike', FBAuth, unlikePost)
-app.post('/post/:postId/comment', FBAuth, commentOnPost)
+app.delete('/post/:postId', FBAuth, deletePost);
+app.get('/post/:postId/like', FBAuth, likePost);
+app.get('/post/:postId/unlike', FBAuth, unlikePost);
+app.post('/post/:postId/comment', FBAuth, commentOnPost);
 
 // users route
 app.post('/signup', signup);
