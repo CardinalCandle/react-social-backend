@@ -32,7 +32,9 @@ const {
   login,
   uploadImage,
   addUserDetails,
-  getAutheticatedUser,
+  getAuthenticatedUser,
+  getUserDetails,
+  markNotificationsRead,
 } = require("./handlers/users");
 const FBAuth = require("./util/fbAuth");
 const firebaseConfig = require("./util/config");
@@ -54,7 +56,9 @@ app.post("/signup", signup);
 app.post("/login", login);
 app.post("/user/image", FBAuth, uploadImage);
 app.post("/user", FBAuth, addUserDetails);
-app.get("/user", FBAuth, getAutheticatedUser);
+app.get("/user", FBAuth, getAuthenticatedUser);
+app.get("/user/:handle", getUserDetails);
+app.post("/notifications", FBAuth, markNotificationsRead);
 
 exports.api = functions.region("europe-west1").https.onRequest(app);
 
@@ -71,7 +75,7 @@ exports.createNotificationOnLike = functions
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: "like",
-            reade: false,
+            read: false,
             postId: doc.id,
           });
         }
@@ -113,7 +117,7 @@ exports.createNotificationOnComment = functions
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: "comment",
-            reade: false,
+            read: false,
             postId: doc.id,
           });
         }
