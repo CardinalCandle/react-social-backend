@@ -18,7 +18,7 @@ const { Auth } = require("firebase-admin/auth");
 require('firebase/auth');
 
 const { getAllPosts, postOnePost } = require('./handlers/posts');
-const { signup, login, uploadImage, addUserDetails } = require('./handlers/users');
+const { signup, login, uploadImage, addUserDetails, getAutheticatedUser } = require('./handlers/users');
 const FBAuth = require('./util/fbAuth')
 const firebaseConfig = require('./util/config')
   
@@ -31,6 +31,7 @@ app.get('/posts', getAllPosts)
 app.post('/post', FBAuth, postOnePost);
 app.post('/user/image', FBAuth, uploadImage)
 app.post('/user', FBAuth, addUserDetails)
+app.get('/user', FBAuth, getAutheticatedUser)
 // users route
 app.post('/signup', signup);
 app.post('/login', login);
