@@ -18,7 +18,7 @@ const { Auth } = require("firebase-admin/auth");
 require('firebase/auth');
 
 const { getAllPosts, postOnePost } = require('./handlers/posts');
-const { signup, login } = require('./handlers/users');
+const { signup, login, uploadImage } = require('./handlers/users');
 const FBAuth = require('./util/fbAuth')
 const firebaseConfig = require('./util/config')
   
@@ -33,5 +33,6 @@ app.post('/post', FBAuth, postOnePost);
 // users route
 app.post('/signup', signup);
 app.post('/login', login);
+app.post('/user/image', FBAuth, uploadImage)
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
