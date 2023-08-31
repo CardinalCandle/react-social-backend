@@ -38,9 +38,13 @@ const {
 } = require("./handlers/users");
 const FBAuth = require("./util/fbAuth");
 const firebaseConfig = require("./util/config");
+const cors = require("cors");
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const firebaseAuth = auth.getAuth(firebaseApp);
+
+// use CORS Middleware
+app.use(cors());
 
 // Post routes
 app.get("/posts", getAllPosts);
